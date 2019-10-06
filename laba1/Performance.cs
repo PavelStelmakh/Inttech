@@ -10,4 +10,16 @@ namespace laba1
         public string Subject { get; set; }
         public int Score { get; set; }
     }
+
+    interface AvgScoreStudents
+    {
+        string student { get; set; }
+        int avgScore { get; set; }
+    }
+
+    interface AvgScoreSubject
+    {
+        string subject { get; set; }
+        int avgScore { get; set; }
+    }
 }
