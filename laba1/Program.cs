@@ -1,6 +1,4 @@
 ﻿using System;
-//using CsvHelper;
-//using CsvHelper.Excel;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,39 +10,43 @@ namespace laba1
     {
         static void Main(string[] args)
         {
-            string fileIn = args[1];
-            string fileOut = args[2];
-
-            using (StreamReader streamReader = new StreamReader(fileIn + ".csv")) {
-                using (CsvReader csvReader = new CsvReader(streamReader))
-                {
-                    csvReader.Configuration.Delimiter = ",";
-                    Performance[] students = csvReader.GetRecords<Performance>().ToArray();
-                    var avgScoreStudents = students
-                        .GroupBy(s => s.Student)
-                        .Select(group => new { student = group.Key, avgScore = group.Average(s => s.Score) });
-                    var avgScoreSubject = students
-                        .GroupBy(s => s.Subject)
-                        .Select(group => new { subject = group.Key, avgScore = group.Average(s => s.Score) });
-
-                    //using (var writer = new StreamWriter(fileOut + ".xlsx"))
-                    //{
-                        using (var csvWriter = new CsvWriter(new ExcelSerializer("path/to/file.xlsx")))
-                        {
-                            csvWriter.WriteRecords(avgScoreStudents);
-                            csvWriter.NextRecord();
-                            csvWriter.WriteHeader<AvgScoreSubject>();
-                            csvWriter.NextRecord();
-                            csvWriter.WriteRecords(avgScoreSubject);
-                        }
-                    //}
-                }
-
+            string fileIn = "", fileOut = "", type = "";
+            try
+            {
+                fileIn = args[1];
+                fileOut = args[2];
+                type = args[3];
+            } catch
+            {
+                Console.WriteLine("args: input_file, output_file and type(json or xlsx)");
+                Console.ReadKey();
+                return;
             }
 
-            //foreach (string i in args) Console.WriteLine(i);
+            if (!type.Equals("json") && !type.Equals("xlsx"))
+            {
+                Console.WriteLine("type must be only json or xlsx");
+                return;
+            }
 
-            //Console.ReadKey();
+            if (!File.Exists(fileIn + ".csv"))
+            {
+                Console.WriteLine("file " + fileIn + " not found");
+                return;
+            }
+
+            Performance[] students = FileService.ReadCSV<Performance>(fileIn);
+            IEnumerable<AvgScoreStudents> avgScoreStudents = students
+                .GroupBy(s => s.Student)
+                .Select(group => new AvgScoreStudents { student = group.Key, avgScore = group.Average(s => s.Score) });
+            IEnumerable<AvgScoreSubject> avgScoreSubject = students
+                .GroupBy(s => s.Subject)
+                .Select(group => new AvgScoreSubject { subject = group.Key, avgScore = group.Average(s => s.Score) });
+
+            if (type.Equals("json"))
+                FileService.SaveJson(fileOut, new SaveObjectJson { avgScoreStudents = avgScoreStudents, avgScoreSubject = avgScoreSubject });
+            else
+                FileService.SaveExcelStudents(fileOut, avgScoreStudents, avgScoreSubject);
         }
     }
 }

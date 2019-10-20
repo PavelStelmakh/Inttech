@@ -11,15 +11,15 @@ namespace laba1
         public int Score { get; set; }
     }
 
-    interface AvgScoreStudents
+    class AvgScoreStudents
     {
-        string student { get; set; }
-        int avgScore { get; set; }
+        public string student { get; set; }
+        public double avgScore { get; set; }
     }
 
-    interface AvgScoreSubject
+    class AvgScoreSubject
     {
-        string subject { get; set; }
-        int avgScore { get; set; }
+        public string subject { get; set; }
+        public double avgScore { get; set; }
     }
 }
