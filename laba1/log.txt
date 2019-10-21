@@ -1,0 +1,1 @@
+type must be only json or xlsx

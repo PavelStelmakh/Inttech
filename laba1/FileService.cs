@@ -11,16 +11,39 @@ namespace laba1
 {
     static class FileService
     {
-        static public T[] ReadCSV<T>(string file)
+        static public Performance[] ReadCSV(string file)
         {
-            T[] data = null;
+            CSVFormat[] data = null;
             using (StreamReader streamReader = new StreamReader(file + ".csv"))
             using (CsvReader csvReader = new CsvReader(streamReader))
             {
-                csvReader.Configuration.Delimiter = ",";
-                data = csvReader.GetRecords<T>().ToArray();
+                csvReader.Configuration.Delimiter = ";";
+                data = csvReader.GetRecords<CSVFormat>().ToArray();
             }
-            return data;
+            CSVFormat[] dataScores = new CSVFormat[data.Length - 1];
+            Array.Copy(data, 1, dataScores, 0, dataScores.Length);
+            //data.CopyTo(dataScores, 1);
+
+            Performance[] result = dataScores.Select((item) => {
+                string[] scores = item.Subject.Split(',');
+                string[] subjects = data[0].Subject.Split(',');
+                StudentScore[] studentScores = new StudentScore[scores.Length];
+
+                for(int i = 0; i < studentScores.Length; i++)
+                {
+                    studentScores[i] = new StudentScore();
+                    studentScores[i].Score = Int32.Parse(scores[i]);
+                    studentScores[i].Subject = subjects[i];
+                }
+
+                return new Performance
+                {
+                    Student = item.Student,
+                    Scores = studentScores,
+                };
+            }).ToArray();
+
+            return result;
         }
 
         static public void SaveJson<T>(string file, T data)
@@ -53,6 +76,14 @@ namespace laba1
                 worksheet.Cells[index, 1].Value = subject.avgScore;
             }
             workbook.Save(file + ".xlsx");
+        }
+
+        static public void Log(string message)
+        {
+            using (var file = new StreamWriter("log.txt"))
+            {
+                file.WriteLine(message);
+            }
         }
     }
 }
