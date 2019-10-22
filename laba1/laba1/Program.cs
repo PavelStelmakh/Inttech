@@ -53,8 +53,7 @@ namespace laba1
                 Console.ReadKey();
                 return;
             }
-
-            //Performance[] students = FileService.ReadCSV<Performance>(fileIn);
+            
             Performance[] students = FileService.ReadCSV(fileIn);
             IEnumerable<AvgScoreStudents> avgScoreStudents = students
                 .Select(student => new AvgScoreStudents { student = student.Student, avgScore = student.Scores.Average(s => s.Score) });
@@ -63,16 +62,26 @@ namespace laba1
                 foreach(var item in s.Scores)
                     subjects.Add(item);
 
-            //students.Select(s => s.Scores.Select(item => {
-            //    subjects.Add(item);
-            //    return true;
-            //}));
+    
             IEnumerable<AvgScoreSubject> avgScoreSubject = subjects
                 .GroupBy(s => s.Subject)
                 .Select(group => new AvgScoreSubject { subject = group.Key, avgScore = group.Average(s => s.Score) });
 
             if (type.Equals("json"))
-                FileService.SaveJson(fileOut, new SaveObjectJson { avgScoreStudents = avgScoreStudents, avgScoreSubject = avgScoreSubject });
+            {
+                FileService.SaveJson(fileOut, new SaveObjectJson {
+                    avgScoreStudents = avgScoreStudents.Select(x =>
+                    {
+                        x.avgScore = Math.Round(x.avgScore, 2);
+                        return x;
+                    }),
+                    avgScoreSubject = avgScoreSubject.Select(x =>
+                    {
+                        x.avgScore = Math.Round(x.avgScore, 2);
+                        return x;
+                    })
+                });
+            }
             else
                 FileService.SaveExcelStudents(fileOut, avgScoreStudents, avgScoreSubject);
         }

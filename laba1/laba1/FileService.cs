@@ -22,24 +22,27 @@ namespace laba1
             }
             CSVFormat[] dataScores = new CSVFormat[data.Length - 1];
             Array.Copy(data, 1, dataScores, 0, dataScores.Length);
-            //data.CopyTo(dataScores, 1);
 
             Performance[] result = dataScores.Select((item) => {
                 string[] scores = item.Subject.Split(',');
                 string[] subjects = data[0].Subject.Split(',');
-                StudentScore[] studentScores = new StudentScore[scores.Length];
-
-                for(int i = 0; i < studentScores.Length; i++)
+                List<StudentScore> studentScores = new List<StudentScore>();
+                for (int i = 0; i < subjects.Length; i++)
                 {
-                    studentScores[i] = new StudentScore();
-                    studentScores[i].Score = Int32.Parse(scores[i]);
-                    studentScores[i].Subject = subjects[i];
+                    string[] scoresBySem = scores[i].Split('/');
+                    for (int j = 0; j < scoresBySem.Length; j++)
+                    {
+                        StudentScore studentScore = new StudentScore();
+                        studentScore.Subject = subjects[i];
+                        studentScore.Score = Int32.Parse(scoresBySem[j]);
+                        studentScores.Add(studentScore);
+                    }
                 }
 
                 return new Performance
                 {
                     Student = item.Student,
-                    Scores = studentScores,
+                    Scores = studentScores.ToArray(),
                 };
             }).ToArray();
 
@@ -66,14 +69,14 @@ namespace laba1
             {
                 AvgScoreStudents students = avgScoreStudents.ElementAt(i);
                 worksheet.Cells[index, 0].Value = students.student;
-                worksheet.Cells[index, 1].Value = students.avgScore;
+                worksheet.Cells[index, 1].Value = String.Format("{0:#0.00}", students.avgScore);
             }
             index++;
             for (int i = 0; i < avgScoreStudents.Count(); i++, index++)
             {
                 AvgScoreSubject subject = avgScoreSubject.ElementAt(i);
                 worksheet.Cells[index, 0].Value = subject.subject;
-                worksheet.Cells[index, 1].Value = subject.avgScore;
+                worksheet.Cells[index, 1].Value = String.Format("{0:#0.00}", subject.avgScore);
             }
             workbook.Save(file + ".xlsx");
         }
