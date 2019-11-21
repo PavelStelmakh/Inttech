@@ -8,7 +8,10 @@ const socket = io(server);
 const PORT = 8000;
 
 socket.on('connection', client => {
+    console.info('connection client');
     const handleMessageBroad = data => {
+        console.info(`message client: ${data}`);
+        client.emit('broad', data);
         client.broadcast.emit('broad', data);
     };
     client.on('join', handleMessageBroad);
