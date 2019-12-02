@@ -11,8 +11,8 @@ socket.on('connection', client => {
     console.info('connection client');
     const handleMessageBroad = data => {
         console.info(`message client: ${data}`);
-        client.emit('broad', data);
-        client.broadcast.emit('broad', data);
+        client.emit('broad', { ...data, time: Date.now() });
+        client.broadcast.emit('broad', { ...data, time: Date.now() });
     };
     client.on('join', handleMessageBroad);
     client.on('message', handleMessageBroad);

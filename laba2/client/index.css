@@ -17,3 +17,13 @@
     flex: 0 0 200px;
     border: 1px solid black;
 }
+
+.messages > div {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.messages > div > div > span {
+    margin-right: 10px;
+}
