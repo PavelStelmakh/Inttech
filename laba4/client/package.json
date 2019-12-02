@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "live-server --port=8080 --entry-file=./index.html --no-browser --cors",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
@@ -13,8 +14,10 @@
     "socket.io-client": "2.3.0"
   },
   "devDependencies": {
-    "http-server": "0.11.1",
+    "live-server": "1.2.1",
+    "livereload": "0.8.2",
     "webpack": "4.41.2",
+    "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0"
   }
 }

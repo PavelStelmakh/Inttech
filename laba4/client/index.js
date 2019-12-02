@@ -1,15 +1,17 @@
 import io from 'socket.io-client';
 
-const socket = io.connect();
+const socket = io.connect('http://localhost:8000');
 const messages = document.querySelector('.messages');
 const { form } = document.forms;
 
 const user = `user_${Math.round(Math.random() * 1000)}`;
 
 socket.on('connect', () => {
-    socket.on('join', { name: user, message: `${user} joined` });
+    console.info('connect');
+    socket.emit('join', { name: user, message: `${user} joined` });
 });
 socket.on('broad', message => {
+    console.info('broad data: ', message);
     const div = document.createElement('div');
     const div1 = document.createElement('div');
     const div2 = document.createElement('div');
@@ -27,8 +29,9 @@ socket.on('broad', message => {
 
 const handleSumbit = e => {
     e.preventDefault();
-    const { message } = form.elements;
-    socket.on('message', { name: user, message });
+    const { message: { value } } = form.elements;    
+    console.info(`send message: ${value}`);
+    socket.emit('message', { name: user, message: value });
 };
 
 form.addEventListener('submit', handleSumbit);

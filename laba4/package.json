@@ -6,7 +6,9 @@
   "scripts": {
     "zookeeper:start": "cd D:\\study/kafka1/bin/windows && zookeeper-server-start.bat ../../config/zookeeper.properties",
     "kafka:start": "cd D:\\study/kafka1/bin/windows && kafka-server-start.bat ../../config/server.properties",
-    "start": "node service.js"
+    "server:start": "nodemon --inspect ./service.js",
+    "client:build": "cd client && npm run build",
+    "client:start": "cd client && npm start"
   },
   "keywords": [],
   "author": "",
