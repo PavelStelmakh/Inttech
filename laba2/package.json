@@ -1,0 +1,20 @@
+{
+  "name": "laba2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "node ./ser/server.js",
+    "client1": "cross-env PORT=8080 node ./cli/client.js",
+    "client2": "cross-env PORT=8081 node ./cli/client.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "6.0.3",
+    "express": "4.17.1",
+    "nodemon": "2.0.1",
+    "request": "2.88.0"
+  }
+}
